@@ -1,0 +1,61 @@
+syntax = "v1"
+
+info(
+    title: "用户"
+    desc: "用户"
+    author: "hq"
+    email: "1422127065@qq.com"
+)
+
+type user {
+    UserName string `json:"username"`
+    NickName string  `json:"nickname"`
+    Sex int64 `json:"sex"`
+    Email string `json:"email"`
+    Info string `json:"info"`
+}
+
+type (
+    RegisterReq{
+        UserName string `json:"username"`
+        Password string `json:"password"`
+        NickName string  `json:"nickname,optional"`
+        Sex int64 `json:"sex,optional"`
+        Email string `json:"email,optional"`
+        Info string `json:"info,optional"`
+    }
+    RegisterResp{
+        AccessToken  string `json:"accessToken"`
+        AccessExpire int64  `json:"accessExpire"`
+        RefreshAfter int64  `json:"refreshAfter"`
+    }
+
+)
+
+type (
+    LoginReq{
+        UserName string `json:"username"`
+        Password string `json:"password"`
+    }
+    LoginResp{
+        AccessToken  string `json:"accessToken"`
+        AccessExpire int64  `json:"accessExpire"`
+        RefreshAfter int64  `json:"refreshAfter"`
+    }
+)
+
+type (
+    UserInfoReq {}
+    UserInfoResp{
+        User user `json:"userinfo"`
+    }
+)
+
+type (
+   UpdateUserInfoReq{
+        User user `json:"userinfo"`
+   }
+   UpdateUserInfoResp{
+        UpdateInfo string `json:"result"`
+   }
+)
