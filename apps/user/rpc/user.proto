@@ -7,7 +7,7 @@ package pb;
 message User {
   string email = 1;
   string nickname =2;
-  int64  sex = 3;
+  string  sex = 3;
   string info = 4;
   string username=5;
 }
@@ -15,7 +15,7 @@ message User {
 message  RegisterReq{
   string email = 1;
   string nickname =2;
-  int64  sex = 3;
+  string  sex = 3;
   string info = 4;
   string username=5;
   string password=6;
@@ -66,7 +66,7 @@ message GenerateTokenResp {
 service usercenter{
   rpc login(LoginReq)returns(LoginResp);
   rpc register(RegisterReq)returns(RegisterResp);
-  rpc getUserInfo(GetUserInfoReq)returns(GenerateTokenResp);
+  rpc getUserInfo(GetUserInfoReq)returns(GetUserInfoResp);
   rpc updateUserInfo(UpdateUserInfoReq)returns(UpdateUserInfoResp);
   rpc generateToken(GenerateTokenReq) returns(GenerateTokenResp);
 }

@@ -4,7 +4,7 @@ package types
 type User struct {
 	UserName string `json:"username"`
 	NickName string `json:"nickname"`
-	Sex      int64  `json:"sex"`
+	Sex      string `json:"sex"`
 	Email    string `json:"email"`
 	Info     string `json:"info"`
 }
@@ -13,7 +13,7 @@ type RegisterReq struct {
 	UserName string `json:"username"`
 	Password string `json:"password"`
 	NickName string `json:"nickname,optional"`
-	Sex      int64  `json:"sex,optional"`
+	Sex      string `json:"sex,optional"`
 	Email    string `json:"email,optional"`
 	Info     string `json:"info,optional"`
 }

@@ -4,7 +4,6 @@ import (
 	"context"
 	"data_source_management_center/apps/user/rpc/internal/svc"
 	"data_source_management_center/apps/user/rpc/pb"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -23,7 +22,9 @@ func NewGetUserInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetUs
 }
 
 func (l *GetUserInfoLogic) GetUserInfo(in *pb.GetUserInfoReq) (*pb.GenerateTokenResp, error) {
-	// todo: add your logic here and delete this line
-
+	user, err := l.svcCtx.UserModel.FindOne(context.Background(), in.Id)
+	if err != nil {
+		return nil, err
+	}
 	return &pb.GenerateTokenResp{}, nil
 }
