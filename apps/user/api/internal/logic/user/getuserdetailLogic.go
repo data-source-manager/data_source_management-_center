@@ -2,10 +2,8 @@ package user
 
 import (
 	"context"
-
-	"api/internal/svc"
-	"api/internal/types"
-
+	"data_source_management_center/apps/user/api/internal/svc"
+	"data_source_management_center/apps/user/api/internal/types"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -24,7 +22,6 @@ func NewGetuserdetailLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Get
 }
 
 func (l *GetuserdetailLogic) Getuserdetail(req *types.UserInfoReq) (resp *types.UserInfoResp, err error) {
-	// todo: add your logic here and delete this line
 
 	return
 }

@@ -7,7 +7,7 @@ info(
     email: "1422127065@qq.com"
 )
 
-type user {
+type User {
     UserName string `json:"username"`
     NickName string  `json:"nickname"`
     Sex int64 `json:"sex"`
@@ -47,13 +47,13 @@ type (
 type (
     UserInfoReq {}
     UserInfoResp{
-        User user `json:"userinfo"`
+        UserInfo User `json:"userinfo"`
     }
 )
 
 type (
    UpdateUserInfoReq{
-        User user `json:"userinfo"`
+        UserInfo User `json:"userinfo"`
    }
    UpdateUserInfoResp{
         UpdateInfo string `json:"result"`

@@ -50,15 +50,29 @@ func (l *RegisterLogic) Register(in *pb.RegisterReq) (*pb.RegisterResp, error) {
 		Int64: in.Sex,
 		Valid: true,
 	}
+	user.Email = sql.NullString{
+		String: in.Email,
+		Valid:  true,
+	}
+	user.Info = sql.NullString{
+		String: in.Info,
+		Valid:  true,
+	}
 
 	insertRes, err := l.svcCtx.UserModel.Insert(context.Background(), user)
 	if err != nil {
 		return nil, err
 	}
 
-	if v, err := insertRes.RowsAffected(); v != 1 {
+	userId, err := insertRes.LastInsertId()
+	createTokenService := NewGenerateTokenLogic(context.Background(), l.svcCtx)
+	genTokenResp, err := createTokenService.GenerateToken(&pb.GenerateTokenReq{UserId: userId})
+	if err != nil {
 		return nil, err
 	}
-
-	return &pb.RegisterResp{}, nil
+	return &pb.RegisterResp{
+		AccessExpire: genTokenResp.AccessExpire,
+		AccessToken:  genTokenResp.AccessToken,
+		RefreshAfter: genTokenResp.RefreshAfter,
+	}, nil
 }

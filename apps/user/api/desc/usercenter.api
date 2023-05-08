@@ -14,7 +14,7 @@ service usercenter{
 	post /user/register(RegisterReq)returns(RegisterResp)
 	
 	@doc "login"
-	@handler ogin
+	@handler login
 	post /user/login(LoginReq)returns(LoginResp)
 }
 

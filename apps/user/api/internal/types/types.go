@@ -39,11 +39,11 @@ type UserInfoReq struct {
 }
 
 type UserInfoResp struct {
-	User user `json:"userinfo"`
+	UserInfo User `json:"userinfo"`
 }
 
 type UpdateUserInfoReq struct {
-	User user `json:"userinfo"`
+	UserInfo User `json:"userinfo"`
 }
 
 type UpdateUserInfoResp struct {

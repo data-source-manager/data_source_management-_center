@@ -2,9 +2,8 @@ package user
 
 import (
 	"context"
-
-	"api/internal/svc"
-	"api/internal/types"
+	"data_source_management_center/apps/user/api/internal/svc"
+	"data_source_management_center/apps/user/api/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
