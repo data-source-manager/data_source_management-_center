@@ -5,10 +5,9 @@ package server
 
 import (
 	"context"
-
-	"rpc/internal/logic"
-	"rpc/internal/svc"
-	"rpc/pb"
+	"data_source_management_center/apps/user/rpc/internal/logic"
+	"data_source_management_center/apps/user/rpc/internal/svc"
+	"data_source_management_center/apps/user/rpc/pb"
 )
 
 type UsercenterServer struct {
