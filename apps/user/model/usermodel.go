@@ -15,6 +15,7 @@ type (
 	UserModel interface {
 		userModel
 		FindOneByUserName(ctx context.Context, username string) (*User, error)
+		Trans(ctx context.Context, fn func(ctx context.Context, session sqlx.Session) error) error
 	}
 
 	customUserModel struct {

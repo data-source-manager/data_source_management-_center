@@ -9,7 +9,9 @@ import (
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
-var cacheUserNamePrefix = "cache:user:username:"
+var (
+	cacheUserNamePrefix = "cache:user:username:"
+)
 
 func (m *defaultUserModel) FindOneByUserName(ctx context.Context, username string) (*User, error) {
 	userIdKey := fmt.Sprintf("%s%v", cacheUserNamePrefix, username)
@@ -31,8 +33,16 @@ func (m *defaultUserModel) FindOneByUserName(ctx context.Context, username strin
 func (m *defaultUserModel) UpdateOptionalFiled(ctx context.Context, data *User, removeFiled []string) error {
 	userIdKey := fmt.Sprintf("%s%v", cacheUserIdPrefix, data.Id)
 	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, userRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, data.Username, data.Password, data.Sex, data.Email, data.Info, data.Id)
+		query := fmt.Sprintf("update %s set %s where `id` = %d", m.table, RemoveFiled(removeFiled), data.Id)
+		return conn.ExecCtx(ctx, query)
 	}, userIdKey)
 	return err
+}
+
+func (m *defaultUserModel) Trans(ctx context.Context, fn func(ctx context.Context, session sqlx.Session) error) error {
+
+	return m.TransactCtx(ctx, func(ctx context.Context, session sqlx.Session) error {
+		return fn(ctx, session)
+	})
+
 }

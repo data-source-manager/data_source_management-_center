@@ -2,11 +2,13 @@ package logic
 
 import (
 	"context"
-	"data_source_management_center/apps/user/model"
 	"data_source_management_center/apps/user/rpc/internal/svc"
 	"data_source_management_center/apps/user/rpc/pb"
 	"data_source_management_center/common/ctxdata"
 	"errors"
+	"fmt"
+
+	"github.com/zeromicro/go-zero/core/stores/sqlx"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -33,16 +35,20 @@ func (l *UpdateUserInfoLogic) UpdateUserInfo(in *pb.UpdateUserInfoReq) (*pb.Upda
 		return nil, errors.New("network busy")
 	}
 
-	updateUser := new(model.User)
-	if in.User.Info != "" {
-		updateUser.Info = in.User.Info
-	} else {
-		updateUser.Info = queryUser.Info
-	}
+	if err := l.svcCtx.UserModel.Trans(context.Background(), func(ctx context.Context, session sqlx.Session) error {
+		delSql := fmt.Sprintf("delete from user where id=?")
+		prepare, err := session.Prepare(delSql)
+		if err != nil {
+			return err
+		}
+		defer prepare.Close()
+		if _, err := prepare.ExecCtx(ctx, prepare, queryUser.Id); err != nil {
+			return err
+		}
 
-	//err := l.svcCtx.UserModel.Update(context.Background(), updateUser)
-	if err != nil {
-		return nil, UpdateUserError
+		return nil
+	}); err != nil {
+		return nil, err
 	}
 
 	return &pb.UpdateUserInfoResp{
