@@ -21,7 +21,8 @@ var (
 	userRowsExpectAutoSet   = strings.Join(stringx.Remove(userFieldNames, "`create_time`", "`update_time`", "`create_at`", "`update_at`"), ",")
 	userRowsWithPlaceHolder = strings.Join(stringx.Remove(userFieldNames, "`id`", "`create_time`", "`update_time`", "`create_at`", "`update_at`"), "=?,") + "=?"
 
-	cacheUserIdPrefix = "cache:user:id:"
+	cacheUserIdPrefix   = "cache:user:id:"
+	cacheUserNamePrefix = "cache:user:username:"
 )
 
 type (
@@ -30,6 +31,7 @@ type (
 		FindOne(ctx context.Context, id int64) (*User, error)
 		Update(ctx context.Context, data *User) error
 		Delete(ctx context.Context, id int64) error
+		FindOneByUserName(ctx context.Context, username string) (*User, error)
 	}
 
 	defaultUserModel struct {
@@ -62,7 +64,22 @@ func (m *defaultUserModel) Delete(ctx context.Context, id int64) error {
 	}, userIdKey)
 	return err
 }
-
+func (m *defaultUserModel) FindOneByUserName(ctx context.Context, username string) (*User, error) {
+	userIdKey := fmt.Sprintf("%s%v", cacheUserNamePrefix, username)
+	var resp User
+	err := m.QueryRowCtx(ctx, &resp, userIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
+		query := fmt.Sprintf("select %s from %s where `username` = ? limit 1", userRows, m.table)
+		return conn.QueryRowCtx(ctx, v, query, username)
+	})
+	switch err {
+	case nil:
+		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
 func (m *defaultUserModel) FindOne(ctx context.Context, id int64) (*User, error) {
 	userIdKey := fmt.Sprintf("%s%v", cacheUserIdPrefix, id)
 	var resp User

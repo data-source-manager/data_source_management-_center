@@ -1,11 +1,11 @@
 package user
 
 import (
+	"data_source_management_center/apps/user/api/internal/logic/user"
+	"data_source_management_center/apps/user/api/internal/svc"
+	"data_source_management_center/apps/user/api/internal/types"
 	"net/http"
 
-	"api/internal/logic/user"
-	"api/internal/svc"
-	"api/internal/types"
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 

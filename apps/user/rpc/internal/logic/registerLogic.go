@@ -8,6 +8,7 @@ import (
 	"data_source_management_center/common/tools"
 	"database/sql"
 	"errors"
+	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"strings"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -34,7 +35,7 @@ func (l *RegisterLogic) Register(in *pb.RegisterReq) (*pb.RegisterResp, error) {
 		return nil, UserNameOrPwdEmptyError
 	}
 	userFindRes, err := l.svcCtx.UserModel.FindOneByUserName(context.Background(), in.Username)
-	if err != nil {
+	if err != nil && err != sqlc.ErrNotFound {
 		return nil, err
 	}
 
@@ -46,17 +47,23 @@ func (l *RegisterLogic) Register(in *pb.RegisterReq) (*pb.RegisterResp, error) {
 
 	user.Username = in.Username
 	user.Password = tools.Md5ByString(in.Password)
-	user.Sex = sql.NullInt64{
-		Int64: in.Sex,
-		Valid: true,
+	if strings.TrimSpace(in.Sex) != "" {
+		user.Sex = sql.NullString{
+			String: in.Sex,
+			Valid:  true,
+		}
 	}
-	user.Email = sql.NullString{
-		String: in.Email,
-		Valid:  true,
+	if strings.TrimSpace(in.Email) != "" {
+		user.Email = sql.NullString{
+			String: in.Email,
+			Valid:  true,
+		}
 	}
-	user.Info = sql.NullString{
-		String: in.Info,
-		Valid:  true,
+	if strings.TrimSpace(in.Info) != "" {
+		user.Info = sql.NullString{
+			String: in.Info,
+			Valid:  true,
+		}
 	}
 
 	insertRes, err := l.svcCtx.UserModel.Insert(context.Background(), user)

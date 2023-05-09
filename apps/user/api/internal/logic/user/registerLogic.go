@@ -5,7 +5,6 @@ import (
 	"data_source_management_center/apps/user/api/internal/svc"
 	"data_source_management_center/apps/user/api/internal/types"
 	"data_source_management_center/apps/user/rpc/usercenter"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

@@ -1,9 +1,9 @@
 Name: usercenter
 Host: 0.0.0.0
-Port: 8888
+Port: 1001
 Log:
   ServiceName: user-api
-  Level: warn
+  Level: error
 JwtAuth:
   AccessSecret: ae0536f9-6450-4606-8e13-5a19ed505da0
   AccessExpire: 31539000
@@ -11,9 +11,9 @@ Cache:
   - Host: 124.221.92.125:63791
 Redis:
   Host: 124.221.92.125:63791
+  Key: user-api
 
 UserRpc:
-  Etcd:
-    Hosts:
-      - 127.0.0.1:2379
-    Key: user.rpc
+  Endpoints:
+    - 127.0.0.1:8080
+  NonBlock: true
