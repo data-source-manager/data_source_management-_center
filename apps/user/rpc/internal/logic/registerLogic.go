@@ -5,6 +5,7 @@ import (
 	"data_source_management_center/apps/user/model"
 	"data_source_management_center/apps/user/rpc/internal/svc"
 	"data_source_management_center/apps/user/rpc/pb"
+	"data_source_management_center/apps/user/rpc/usercenter"
 	"data_source_management_center/common/tools"
 	"errors"
 	"strings"
@@ -64,7 +65,7 @@ func (l *RegisterLogic) Register(in *pb.RegisterReq) (*pb.RegisterResp, error) {
 
 	userId, err := insertRes.LastInsertId()
 	createTokenService := NewGenerateTokenLogic(l.ctx, l.svcCtx)
-	genTokenResp, err := createTokenService.GenerateToken(&pb.GenerateTokenReq{UserId: userId})
+	genTokenResp, err := createTokenService.GenerateToken(&usercenter.GenerateTokenReq{UserId: userId})
 	if err != nil {
 		return nil, err
 	}

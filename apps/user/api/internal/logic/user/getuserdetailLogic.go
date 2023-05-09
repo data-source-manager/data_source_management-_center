@@ -24,7 +24,7 @@ func NewGetuserdetailLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Get
 }
 
 func (l *GetuserdetailLogic) Getuserdetail(req *types.UserInfoReq) (resp *types.UserInfoResp, err error) {
-	userInfo, err := l.svcCtx.UserRpc.GetUserInfo(context.Background(), &usercenter.GetUserInfoReq{
+	userInfo, err := l.svcCtx.UserRpc.GetUserInfo(l.ctx, &usercenter.GetUserInfoReq{
 		Id: ctxdata.GetUidFromCtx(l.ctx),
 	})
 	if err != nil {

@@ -6,7 +6,6 @@ import (
 	"data_source_management_center/apps/user/rpc/pb"
 	"data_source_management_center/common/ctxdata"
 	"data_source_management_center/common/xerr"
-	"fmt"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/pkg/errors"
 	"time"
@@ -47,7 +46,6 @@ func (l *GenerateTokenLogic) GenerateToken(in *pb.GenerateTokenReq) (*pb.Generat
 }
 
 func (l *GenerateTokenLogic) getJwtToken(secretKey string, iat, seconds, userId int64) (string, error) {
-	fmt.Println("用户id：", userId)
 	claims := make(jwt.MapClaims)
 	claims["exp"] = iat + seconds
 	claims["iat"] = iat

@@ -23,7 +23,7 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 }
 
 func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterResp, err error) {
-	registerRes, err := l.svcCtx.UserRpc.Register(context.Background(), &usercenter.RegisterReq{
+	registerRes, err := l.svcCtx.UserRpc.Register(l.ctx, &usercenter.RegisterReq{
 		Username: req.UserName,
 		Password: req.Password,
 		Email:    req.Email,

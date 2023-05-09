@@ -5,8 +5,8 @@ import (
 	"data_source_management_center/apps/user/api/internal/svc"
 	"data_source_management_center/apps/user/api/internal/types"
 	"data_source_management_center/apps/user/rpc/pb"
+	"data_source_management_center/common/ctxdata"
 	"fmt"
-
 	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -26,13 +26,12 @@ func NewUpdateuserinfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Up
 }
 
 func (l *UpdateuserinfoLogic) Updateuserinfo(req *types.UpdateUserInfoReq) (resp *types.UpdateUserInfoResp, err error) {
-	fmt.Println(fmt.Sprintf("%+v", req))
+	fmt.Println("api获取的用户id:", ctxdata.GetUidFromCtx(l.ctx))
 	pbUser := new(pb.User)
 	_ = copier.Copy(pbUser, req)
-	updateRes, err := l.svcCtx.UserRpc.UpdateUserInfo(context.Background(), &pb.UpdateUserInfoReq{
+	updateRes, err := l.svcCtx.UserRpc.UpdateUserInfo(l.ctx, &pb.UpdateUserInfoReq{
 		User: pbUser,
 	})
-	fmt.Println(updateRes)
 	_ = copier.Copy(resp, updateRes)
 	return
 }

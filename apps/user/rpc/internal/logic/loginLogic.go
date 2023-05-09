@@ -4,8 +4,11 @@ import (
 	"context"
 	"data_source_management_center/apps/user/rpc/internal/svc"
 	"data_source_management_center/apps/user/rpc/pb"
+	"data_source_management_center/apps/user/rpc/usercenter"
+	"data_source_management_center/common/ctxdata"
 	"data_source_management_center/common/tools"
 	"errors"
+	"fmt"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"strings"
 
@@ -48,11 +51,11 @@ func (l *LoginLogic) Login(in *pb.LoginReq) (*pb.LoginResp, error) {
 	}
 	generateTokenLogic := NewGenerateTokenLogic(l.ctx, l.svcCtx)
 
-	tokenResp, err := generateTokenLogic.GenerateToken(&pb.GenerateTokenReq{UserId: user.Id})
+	tokenResp, err := generateTokenLogic.GenerateToken(&usercenter.GenerateTokenReq{UserId: user.Id})
 	if err != nil {
 		return nil, err
 	}
-
+	fmt.Println(ctxdata.GetUidFromCtx(l.ctx))
 	return &pb.LoginResp{
 		AccessToken:  tokenResp.AccessToken,
 		AccessExpire: tokenResp.AccessExpire,

@@ -5,7 +5,6 @@ import (
 	"data_source_management_center/apps/user/model"
 	"data_source_management_center/apps/user/rpc/internal/svc"
 	"data_source_management_center/apps/user/rpc/pb"
-	"data_source_management_center/common/ctxdata"
 	"errors"
 	"fmt"
 	"github.com/jinzhu/copier"
@@ -33,9 +32,7 @@ func NewUpdateUserInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Up
 }
 
 func (l *UpdateUserInfoLogic) UpdateUserInfo(in *pb.UpdateUserInfoReq) (*pb.UpdateUserInfoResp, error) {
-	userId := ctxdata.GetUidFromCtx(l.ctx)
-	fmt.Println("获取到的用户id:", userId)
-	queryUser, err := l.svcCtx.UserModel.FindOne(context.Background(), userId)
+	queryUser, err := l.svcCtx.UserModel.FindOneByUserName(l.ctx, in.User.Username)
 	if err != nil {
 		fmt.Println(err)
 		return nil, errors.New("network busy")

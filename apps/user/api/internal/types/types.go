@@ -2,6 +2,7 @@
 package types
 
 type User struct {
+	Id       int64  `json:"id"`
 	UserName string `json:"username,optional"`
 	NickName string `json:"nickname,optional"`
 	Sex      string `json:"sex,optional"`
