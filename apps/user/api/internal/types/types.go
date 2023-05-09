@@ -2,11 +2,11 @@
 package types
 
 type User struct {
-	UserName string `json:"username"`
-	NickName string `json:"nickname"`
-	Sex      string `json:"sex"`
-	Email    string `json:"email"`
-	Info     string `json:"info"`
+	UserName string `json:"username,optional"`
+	NickName string `json:"nickname,optional"`
+	Sex      string `json:"sex,optional"`
+	Email    string `json:"email,optional"`
+	Info     string `json:"info,optional"`
 }
 
 type RegisterReq struct {

@@ -31,8 +31,8 @@ func (l *GetUserInfoLogic) GetUserInfo(in *pb.GetUserInfoReq) (*pb.GetUserInfoRe
 
 	return &pb.GetUserInfoResp{User: &pb.User{
 		Username: queryRes.Username,
-		Email:    queryRes.Email.String,
-		Info:     queryRes.Info.String,
-		Sex:      queryRes.Sex.String,
+		Email:    queryRes.Email,
+		Info:     queryRes.Info,
+		Sex:      queryRes.Sex,
 	}}, nil
 }

@@ -6,10 +6,10 @@ import (
 	"data_source_management_center/apps/user/rpc/internal/svc"
 	"data_source_management_center/apps/user/rpc/pb"
 	"data_source_management_center/common/tools"
-	"database/sql"
 	"errors"
-	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"strings"
+
+	"github.com/zeromicro/go-zero/core/stores/sqlc"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -48,22 +48,13 @@ func (l *RegisterLogic) Register(in *pb.RegisterReq) (*pb.RegisterResp, error) {
 	user.Username = in.Username
 	user.Password = tools.Md5ByString(in.Password)
 	if strings.TrimSpace(in.Sex) != "" {
-		user.Sex = sql.NullString{
-			String: in.Sex,
-			Valid:  true,
-		}
+		user.Sex = in.Sex
 	}
 	if strings.TrimSpace(in.Email) != "" {
-		user.Email = sql.NullString{
-			String: in.Email,
-			Valid:  true,
-		}
+		user.Email = in.Email
 	}
 	if strings.TrimSpace(in.Info) != "" {
-		user.Info = sql.NullString{
-			String: in.Info,
-			Valid:  true,
-		}
+		user.Info = in.Info
 	}
 
 	insertRes, err := l.svcCtx.UserModel.Insert(context.Background(), user)
