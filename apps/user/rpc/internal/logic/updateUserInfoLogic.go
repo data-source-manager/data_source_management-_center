@@ -32,12 +32,11 @@ func NewUpdateUserInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Up
 }
 
 func (l *UpdateUserInfoLogic) UpdateUserInfo(in *pb.UpdateUserInfoReq) (*pb.UpdateUserInfoResp, error) {
-	queryUser, err := l.svcCtx.UserModel.FindOneByUserName(l.ctx, in.User.Username)
+	_, err := l.svcCtx.UserModel.FindOne(l.ctx, in.User.Id)
 	if err != nil {
-		fmt.Println(err)
 		return nil, errors.New("network busy")
 	}
-	if err != sqlx.ErrNotFound {
+	if err == sqlx.ErrNotFound {
 		return nil, errors.New("用户不存在")
 	}
 
@@ -48,11 +47,11 @@ func (l *UpdateUserInfoLogic) UpdateUserInfo(in *pb.UpdateUserInfoReq) (*pb.Upda
 			return err
 		}
 		defer prepare.Close()
-		if _, err := prepare.ExecCtx(ctx, prepare, queryUser.Id); err != nil {
+		if _, err := prepare.Exec(in.User.Id); err != nil {
 			return err
 		}
 		u := new(model.User)
-		_ = copier.Copy(u, queryUser)
+		_ = copier.Copy(u, in.User)
 		if strings.TrimSpace(in.User.Username) != "" {
 			u.Username = in.User.Username
 		}
@@ -65,12 +64,14 @@ func (l *UpdateUserInfoLogic) UpdateUserInfo(in *pb.UpdateUserInfoReq) (*pb.Upda
 		if strings.TrimSpace(in.User.Sex) != "" {
 			u.Sex = in.User.Sex
 		}
-		insertSql := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?)", "user", model.GetSqlFormat)
+
+		insertSql := "insert into user (password,username,sex,email,info) values (?,?, ?, ?, ?)"
+		fmt.Println(insertSql)
 		preInsert, err := session.Prepare(insertSql)
 		if err != nil {
 			return err
 		}
-		if _, err := preInsert.ExecCtx(ctx, preInsert, u.Username, u.Sex, u.Email, u.Info); err != nil {
+		if _, err := preInsert.Exec(u.Password, u.Username, u.Sex, u.Email, u.Info); err != nil {
 			return err
 		}
 		return nil
