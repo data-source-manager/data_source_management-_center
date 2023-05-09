@@ -108,5 +108,5 @@ func (m *defaultUserModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, 
 }
 
 func (m *defaultUserModel) tableName() string {
-	return m.table
+	return strings.Join(stringx.Remove(userFieldNames, "`id`", "`password`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), "=?,") + "=?"
 }

@@ -29,3 +29,7 @@ func NewUserModel(conn sqlx.SqlConn, c cache.CacheConf) UserModel {
 		defaultUserModel: newUserModel(conn, c),
 	}
 }
+
+func GetSqlFormat() string {
+	return userRowsWithPlaceHolder
+}

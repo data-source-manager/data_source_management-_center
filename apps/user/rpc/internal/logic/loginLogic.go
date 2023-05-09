@@ -46,7 +46,8 @@ func (l *LoginLogic) Login(in *pb.LoginReq) (*pb.LoginResp, error) {
 	if user.Password != tools.Md5ByString(in.Password) {
 		return nil, UserPasswordError
 	}
-	generateTokenLogic := NewGenerateTokenLogic(context.Background(), l.svcCtx)
+	generateTokenLogic := NewGenerateTokenLogic(l.ctx, l.svcCtx)
+
 	tokenResp, err := generateTokenLogic.GenerateToken(&pb.GenerateTokenReq{UserId: user.Id})
 	if err != nil {
 		return nil, err

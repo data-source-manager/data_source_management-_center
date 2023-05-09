@@ -2,11 +2,14 @@ package logic
 
 import (
 	"context"
+	"data_source_management_center/apps/user/model"
 	"data_source_management_center/apps/user/rpc/internal/svc"
 	"data_source_management_center/apps/user/rpc/pb"
 	"data_source_management_center/common/ctxdata"
 	"errors"
 	"fmt"
+	"github.com/jinzhu/copier"
+	"strings"
 
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 
@@ -30,9 +33,15 @@ func NewUpdateUserInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Up
 }
 
 func (l *UpdateUserInfoLogic) UpdateUserInfo(in *pb.UpdateUserInfoReq) (*pb.UpdateUserInfoResp, error) {
-	queryUser, err := l.svcCtx.UserModel.FindOne(context.Background(), ctxdata.GetUidFromCtx(l.ctx))
+	userId := ctxdata.GetUidFromCtx(l.ctx)
+	fmt.Println("获取到的用户id:", userId)
+	queryUser, err := l.svcCtx.UserModel.FindOne(context.Background(), userId)
 	if err != nil {
+		fmt.Println(err)
 		return nil, errors.New("network busy")
+	}
+	if err != sqlx.ErrNotFound {
+		return nil, errors.New("用户不存在")
 	}
 
 	if err := l.svcCtx.UserModel.Trans(context.Background(), func(ctx context.Context, session sqlx.Session) error {
@@ -45,7 +54,28 @@ func (l *UpdateUserInfoLogic) UpdateUserInfo(in *pb.UpdateUserInfoReq) (*pb.Upda
 		if _, err := prepare.ExecCtx(ctx, prepare, queryUser.Id); err != nil {
 			return err
 		}
-
+		u := new(model.User)
+		_ = copier.Copy(u, queryUser)
+		if strings.TrimSpace(in.User.Username) != "" {
+			u.Username = in.User.Username
+		}
+		if strings.TrimSpace(in.User.Email) != "" {
+			u.Email = in.User.Email
+		}
+		if strings.TrimSpace(in.User.Info) != "" {
+			u.Info = in.User.Info
+		}
+		if strings.TrimSpace(in.User.Sex) != "" {
+			u.Sex = in.User.Sex
+		}
+		insertSql := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?)", "user", model.GetSqlFormat)
+		preInsert, err := session.Prepare(insertSql)
+		if err != nil {
+			return err
+		}
+		if _, err := preInsert.ExecCtx(ctx, preInsert, u.Username, u.Sex, u.Email, u.Info); err != nil {
+			return err
+		}
 		return nil
 	}); err != nil {
 		return nil, err

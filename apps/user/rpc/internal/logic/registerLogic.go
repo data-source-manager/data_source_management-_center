@@ -63,7 +63,7 @@ func (l *RegisterLogic) Register(in *pb.RegisterReq) (*pb.RegisterResp, error) {
 	}
 
 	userId, err := insertRes.LastInsertId()
-	createTokenService := NewGenerateTokenLogic(context.Background(), l.svcCtx)
+	createTokenService := NewGenerateTokenLogic(l.ctx, l.svcCtx)
 	genTokenResp, err := createTokenService.GenerateToken(&pb.GenerateTokenReq{UserId: userId})
 	if err != nil {
 		return nil, err
