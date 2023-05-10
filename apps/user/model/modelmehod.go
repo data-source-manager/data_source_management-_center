@@ -4,6 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"strings"
+
+	"github.com/zeromicro/go-zero/core/stringx"
 
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
@@ -11,6 +14,7 @@ import (
 
 var (
 	cacheUserNamePrefix = "cache:user:username:"
+	updateFilterFiled   = strings.Join(stringx.Remove(userFieldNames, "`id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`", "`password`"), "=?,") + "=?"
 )
 
 func (m *defaultUserModel) FindOneByUserName(ctx context.Context, username string) (*User, error) {
@@ -45,4 +49,13 @@ func (m *defaultUserModel) Trans(ctx context.Context, fn func(ctx context.Contex
 		return fn(ctx, session)
 	})
 
+}
+
+func (m *defaultUserModel) UpdateUserInfo(ctx context.Context, data *User) error {
+	userIdKey := fmt.Sprintf("%s%v", cacheUserIdPrefix, data.Id)
+	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
+		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, updateFilterFiled)
+		return conn.ExecCtx(ctx, query, data.Username, data.Sex, data.Email, data.Info, data.Id)
+	}, userIdKey)
+	return err
 }
